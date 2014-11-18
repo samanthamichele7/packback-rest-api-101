@@ -1,6 +1,9 @@
 <?php
 
-class UserController extends BaseController
+use Packback\Transformer\BookTransformer;
+use Packback\Transformer\UserTransformer;
+
+class UserController extends ApiController
 {
     /**
      * Get all users
@@ -11,9 +14,7 @@ class UserController extends BaseController
     {
         $users = User::all();
 
-        return Response::json([
-            'data' => $users
-        ]);
+        return $this->respondWithCollection($users, new UserTransformer);
     }
 
     /**
@@ -26,9 +27,7 @@ class UserController extends BaseController
     {
         $user = User::findOrFail($user_id);
 
-        return Response::json([
-            'data' => $user
-        ]);
+        return $this->respondWithItem($user, new UserTransformer);
     }
 
     /**
@@ -43,9 +42,7 @@ class UserController extends BaseController
 
         $books = $user->books;
 
-        return Response::json([
-           'data' => $books
-        ]);
+        return $this->respondWithCollection($books, new BookTransformer);
     }
 
     /**
@@ -59,10 +56,7 @@ class UserController extends BaseController
 
         $user = User::create($input);
 
-        return Response::json([
-            'success' => true,
-            'data' => $user
-        ]);
+        return $this->respondWithItem($user, new UserTransformer);
     }
 
     /**
@@ -77,10 +71,7 @@ class UserController extends BaseController
 
         $user->books()->attach($book_id);
 
-        return Response::json([
-            'success' => true,
-            'data' => $user->books
-        ]);
+        return $this->respondWithCollection($user->books, new BookTransformer);
     }
 
     /**
@@ -97,10 +88,7 @@ class UserController extends BaseController
 
         $user->update($input);
 
-        return Response::json([
-            'success' => true,
-            'data' => $user
-        ]);
+        return $this->respondWithItem($user, new UserTransformer);
     }
 
     /**
@@ -113,6 +101,7 @@ class UserController extends BaseController
     {
         $user = User::findOrFail($user_id);
 
+        // Remove all book relationships
         $user->books()->sync([]);
 
         $user->delete();
@@ -134,9 +123,6 @@ class UserController extends BaseController
 
         $user->books()->detach($book_id);
 
-        return Response::json([
-            'success' => true,
-            'data' => $user->books
-        ]);
+        return $this->respondWithCollection($user->books, new BookTransformer);
     }
 }

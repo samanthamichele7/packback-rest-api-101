@@ -1,6 +1,8 @@
 <?php
 
-class BookController extends BaseController
+use Packback\Transformer\BookTransformer;
+
+class BookController extends ApiController
 {
     /**
      * Get all books
@@ -11,9 +13,7 @@ class BookController extends BaseController
     {
         $books = Book::all();
 
-        return Response::json([
-            'data' => $books
-        ]);
+        return $this->respondWithCollection($books, new BookTransformer);
     }
 
     /**
@@ -26,9 +26,7 @@ class BookController extends BaseController
     {
         $book = Book::findOrFail($book_id);
 
-        return Response::json([
-            'data' => $book
-        ]);
+        return $this->respondWithItem($book, new BookTransformer);
     }
 
     /**
@@ -42,9 +40,7 @@ class BookController extends BaseController
 
         $book = Book::create($input);
 
-        return Response::json([
-            'data' => $book
-        ]);
+        return $this->respondWithItem($book, new BookTransformer);
     }
 
     /**
@@ -61,9 +57,7 @@ class BookController extends BaseController
 
         $book->update($input);
 
-        return Response::json([
-            'data' => $book
-        ]);
+        return $this->respondWithItem($book, new BookTransformer);
     }
 
     /**
@@ -74,14 +68,17 @@ class BookController extends BaseController
      */
     public function destroy($book_id)
     {
-        $book = User::findOrFail($book_id);
+        $book = Book::findOrFail($book_id);
 
+        // Remove all user relationships
         $book->users()->sync([]);
 
         $book->delete();
 
         return Response::json([
-            'success' => true
+            'data' => [
+                'success' => true
+            ]
         ]);
     }
 }
