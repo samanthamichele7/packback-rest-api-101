@@ -11,7 +11,15 @@ class DatabaseSeeder extends Seeder {
 	{
 		Eloquent::unguard();
 
-		// $this->call('UserTableSeeder');
-	}
+        // Disable foreign key checks in order to truncate the tables
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+
+        $this->call('UserTableSeeder');
+        $this->call('BookTableSeeder');
+        $this->call('UserBookTableSeeder');
+
+        // Enable foreign key constraints
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+    }
 
 }
