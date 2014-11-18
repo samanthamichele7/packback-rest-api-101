@@ -16,6 +16,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	protected $table = 'users';
 
+    /**
+     * Whitelisted traits
+     *
+     * @var array
+     */
+    protected $fillable = ['email', 'name', 'password'];
+
 	/**
 	 * The attributes excluded from the model's JSON form.
 	 *
@@ -23,4 +30,13 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	protected $hidden = array('password', 'remember_token');
 
+    /**
+     * Set up many-to-many relationship with Book
+     *
+     * @return Book Collection
+     */
+    public function books()
+    {
+        return $this->belongsToMany('Book', 'books_users');
+    }
 }
