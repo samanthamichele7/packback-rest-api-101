@@ -26,20 +26,20 @@ Route::get('/', function()
 Route::group(['prefix' => 'api'], function() {
     Route::group(['prefix' => 'books'], function(){
         Route::get('', 				    array('uses' => 'BookController@index'));
-        Route::get('{id}', 			    array('uses' => 'BookController@show'));
-        Route::post('', 			    array('before' => 'auth', 'uses' => 'BookController@store'));
-        Route::patch('{id}', 			array('before' => 'auth', 'uses' => 'BookController@update'));
-        Route::delete('{id}',		    array('before' => 'auth', 'uses' => 'BookController@destroy'));
+        Route::get('{book_id}', 	    array('uses' => 'BookController@show'));
+        Route::post('', 			    array('uses' => 'BookController@store'));
+        Route::patch('{book_id}', 		array('uses' => 'BookController@update'));
+        Route::delete('{book_id}',		array('uses' => 'BookController@destroy'));
     });
 
     Route::group(['prefix' => 'users'], function(){
-        Route::get('', 				        array('uses' => 'UserController@index'));
-        Route::get('{id}', 			        array('uses' => 'UserController@show'));
-        Route::get('{id}/books',            array('uses' => 'UserController@showBooks'));
-        Route::post('', 			        array('before' => 'auth', 'uses' => 'UserController@store'));
-        Route::post('{id}/books',           array('uses' => 'UserController@storeBooks'));
-        Route::patch('{id}', 			    array('before' => 'auth', 'uses' => 'UserController@update'));
-        Route::delete('{id}',		        array('before' => 'auth', 'uses' => 'UserController@destroy'));
-        Route::delete('{id}/books/{id}',    array('uses' => 'UserController@destroyBooks'));
+        Route::get('', 				                array('uses' => 'UserController@index'));
+        Route::get('{user_id}', 			        array('uses' => 'UserController@show'));
+        Route::get('{user_id}/books',               array('uses' => 'UserController@showBooks'));
+        Route::post('', 			                array('uses' => 'UserController@store'));
+        Route::post('{user_id}/books/{book_id}',    array('uses' => 'UserController@storeBooks'));
+        Route::patch('{user_id}', 			        array('uses' => 'UserController@update'));
+        Route::delete('{user_id}',		            array('uses' => 'UserController@destroy'));
+        Route::delete('{user_id}/books/{book_id}',  array('uses' => 'UserController@destroyBooks'));
     });
 });
